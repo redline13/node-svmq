@@ -76,7 +76,7 @@ class ReceiveMessageWorker : public AsyncWorker {
     ~ReceiveMessageWorker() { }
 
     void Execute() {
-      message = new msgbuf;
+      message = new _msgbuf;
 
       bufferLength = msgrcv(id, message, bufferLength, type, flags);
       error = errno;
@@ -99,7 +99,7 @@ class ReceiveMessageWorker : public AsyncWorker {
 
   private:
     int id;
-    msgbuf *message;
+    _msgbuf *message;
     size_t bufferLength;
     long type;
     int flags;
