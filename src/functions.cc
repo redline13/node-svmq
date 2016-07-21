@@ -12,17 +12,10 @@ using Nan::Callback;
 using Nan::New;
 using Nan::Null;
 
-#ifndef __USE_GNU
-
-#ifndef MSGMAX
-#define MSGMAX 4056
-#endif
-
-struct msgbuf {
+struct _msgbuf {
   long mtype;
-  char mtext[MSGMAX - 4];
+  char mtext[65535];
 };
-#endif
 
 const char *ConcatString(std::string one, const char *two) {
   return one.append(two).c_str();
@@ -44,13 +37,14 @@ class SendMessageWorker : public AsyncWorker {
     ~SendMessageWorker() { }
 
     void Execute() {
-      msgbuf *message = new msgbuf;
+      _msgbuf *message = new _msgbuf;
       message->mtype = type;
 
       memcpy(message->mtext, data, dataLength);
 
       ret = msgsnd(id, message, dataLength, flags);
       error = errno;
+      delete message;
     }
 
     void HandleOKCallback () {
